@@ -9,8 +9,9 @@ namespace SchoolRegister.DAL.EF
         private readonly ConnectionStringDto _connectionStringDto;
         // Table properties e.g
         public virtual DbSet<Grade> Grade { get; set; }
-        // other table properties
-        // ……
+        public virtual DbSet<Group> Groups { get; set; }
+        public virtual DbSet<Subject> Subjects { get; set; }
+         
         public ApplicationDbContext(ConnectionStringDto connectionStringDto)
         {
             _connectionStringDto = connectionStringDto;
@@ -24,12 +25,18 @@ namespace SchoolRegister.DAL.EF
         {
             base.OnModelCreating(modelBuilder);
             // Fluent API commands
+            modelBuilder.Entity<Group>()
+                .HasMany(g => g.Students)
+                .WithOne(s => s.Group)
+                .HasForeignKey(x => x.GroupId)
+                .IsRequired();
+
             modelBuilder.Entity<User>()
-            .ToTable("AspNetUsers")
-            .HasDiscriminator<int>("UserType")
-            .HasValue<Student>(1)
-            .HasValue<Parent>(2)
-            .HasValue<Teacher>(3);
+                .ToTable("AspNetUsers")
+                .HasDiscriminator<int>("UserType")
+                .HasValue<Student>(1)
+                .HasValue<Parent>(2)
+                .HasValue<Teacher>(3);
         }
     }
 }
