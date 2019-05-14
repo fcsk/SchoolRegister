@@ -8,4 +8,8 @@
     <Folder Include="EF\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SchoolRegister.BLL\SchoolRegister.BLL.csproj" />
+  </ItemGroup>
+
 </Project>
