@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Folder Include="DTOs\" />
-    <Folder Include="VMs\" />
   </ItemGroup>
 
 </Project>

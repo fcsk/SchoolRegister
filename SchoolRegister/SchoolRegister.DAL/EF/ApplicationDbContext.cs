@@ -7,11 +7,12 @@ namespace SchoolRegister.DAL.EF
     public class ApplicationDbContext : IdentityDbContext<User, Role, int>
     {
         private readonly ConnectionStringDto _connectionStringDto;
+
         // Table properties e.g
         public virtual DbSet<Grade> Grade { get; set; }
         public virtual DbSet<Group> Groups { get; set; }
         public virtual DbSet<Subject> Subjects { get; set; }
-         
+
         public ApplicationDbContext(ConnectionStringDto connectionStringDto)
         {
             _connectionStringDto = connectionStringDto;
@@ -19,7 +20,9 @@ namespace SchoolRegister.DAL.EF
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer(_connectionStringDto.ConnectionString);
+            optionsBuilder.UseSqlServer(_connectionStringDto.ConnectionString); // for provider SQL Server 
+            // optionsBuilder.UseMySql(_connectionStringDto.ConnectionString); //for provider My SQL 
+
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,6 +40,8 @@ namespace SchoolRegister.DAL.EF
                 .HasValue<Student>(1)
                 .HasValue<Parent>(2)
                 .HasValue<Teacher>(3);
+
+
         }
     }
 }
