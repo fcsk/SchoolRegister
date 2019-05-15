@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SchoolRegister.ViewModels.VMs
 {
-    public class GradesRaport
+    public class GradesRaportVm
     {
         public string StudentFirstName { get; set; }
         public string StudentLastName { get; set; }
