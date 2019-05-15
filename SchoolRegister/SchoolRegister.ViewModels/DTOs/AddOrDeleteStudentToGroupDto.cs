@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SchoolRegister.ViewModels.DTOs
 {
-    public class AddOrDeleteStudentToGroup
+    public class AddOrDeleteStudentToGroupDto
     {
         [Required]
         public int SubjectId { get; set; }
