@@ -145,5 +145,17 @@ namespace SchoolRegister.Services.Services
 
             return groupVm;
         }
+
+        public IEnumerable<GroupVm> GetGroups(Expression<Func<Group, bool>> filterPredicate = null)
+        {
+            var groupEntities = _dbContext.Groups
+               .AsQueryable();
+            if (filterPredicate != null)
+            {
+                groupEntities = groupEntities.Where(filterPredicate);
+            }
+            var groupVms = Mapper.Map<IEnumerable<GroupVm>>(groupEntities.ToList());
+            return groupVms;
+        }
     }
 }

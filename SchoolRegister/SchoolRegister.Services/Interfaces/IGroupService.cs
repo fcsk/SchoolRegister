@@ -12,6 +12,7 @@ namespace SchoolRegister.Services.Interfaces
     {
         GroupVm AddOrUpdateGroup(AddOrUpdateGroupDto addOrUpdateGroupDto);
         GroupVm GetGroup(Expression<Func<Group, bool>> filterPredicate);
+        IEnumerable<GroupVm> GetGroups(Expression<Func<Group, bool>> filterPredicate = null);
         GroupVm AddSubjectToGroup(AddOrDeleteSubjectToGroupDto addSubjectToGroupDto);
         GroupVm DeleteSubjectToGroup(AddOrDeleteSubjectToGroupDto deleteSubjectToGroupDto);
         StudentVm AddStudentToGroup(AddOrDeleteStudentToGroupDto addStudentToGroupDto);
