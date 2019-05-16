@@ -127,8 +127,7 @@ namespace SchoolRegister.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Name")
-                        .IsRequired();
+                    b.Property<string>("Name");
 
                     b.HasKey("Id");
 
@@ -168,8 +167,7 @@ namespace SchoolRegister.DAL.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<string>("Name")
-                        .IsRequired();
+                    b.Property<string>("Name");
 
                     b.Property<int>("TeacherID");
 
@@ -275,8 +273,7 @@ namespace SchoolRegister.DAL.Migrations
                 {
                     b.HasBaseType("SchoolRegister.BLL.Entities.User");
 
-                    b.Property<int?>("GroupId")
-                        .IsRequired();
+                    b.Property<int>("GroupId");
 
                     b.Property<int?>("ParentId");
 
@@ -384,7 +381,7 @@ namespace SchoolRegister.DAL.Migrations
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SchoolRegister.BLL.Entities.Parent", "Parent")
+                    b.HasOne("SchoolRegister.BLL.Entities.Parent")
                         .WithMany("Students")
                         .HasForeignKey("ParentId");
                 });
