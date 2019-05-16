@@ -12,6 +12,8 @@ namespace SchoolRegister.DAL.EF
         public virtual DbSet<Grade> Grade { get; set; }
         public virtual DbSet<Group> Groups { get; set; }
         public virtual DbSet<Subject> Subjects { get; set; }
+        public virtual DbSet<SubjectGroup> SubjectGroup { get; set; }
+
 
         public ApplicationDbContext(ConnectionStringDto connectionStringDto)
         {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SchoolRegister.BLL.Entities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,5 +9,8 @@ namespace SchoolRegister.ViewModels.VMs
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public IList<Student> Students { get; set; }
+
+        public IList<SubjectGroup> SubjectGroups { get; set; }
     }
 }

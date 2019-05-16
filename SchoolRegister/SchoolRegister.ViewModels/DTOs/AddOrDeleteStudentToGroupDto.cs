@@ -8,7 +8,7 @@ namespace SchoolRegister.ViewModels.DTOs
     public class AddOrDeleteStudentToGroupDto
     {
         [Required]
-        public int SubjectId { get; set; }
+        public int StudentId { get; set; }
         [Required]
         public int GroupId { get; set; }
     }

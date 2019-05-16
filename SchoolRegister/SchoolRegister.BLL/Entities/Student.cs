@@ -13,7 +13,11 @@ namespace SchoolRegister.BLL.Entities
         public IList<Grade> Grades { get; set; }
         public Group Group { get; set; }
         [ForeignKey("Group")]
-        public int GroupId { get; set; }
+        public int? GroupId { get; set; }
+        public virtual Parent Parent { get; set; }
+        [ForeignKey("Parent")]
+        public int ? ParentId { get; set; }
+    
         [NotMapped]
         public double AverageGrade => Math.Round(Grades.Average(g => (int)g.GradeValue), 1);
 
