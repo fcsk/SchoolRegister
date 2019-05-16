@@ -22,9 +22,9 @@ namespace SchoolRegister.DAL.EF
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer(_connectionStringDto.ConnectionString); // for provider SQL Server 
-            // optionsBuilder.UseMySql(_connectionStringDto.ConnectionString); //for provider My SQL 
-
+            optionsBuilder
+                //.UseLazyLoadingProxies() Lazyloading nie działa na ten moment!
+                .UseSqlServer(_connectionStringDto.ConnectionString); // for provider SQL Server 
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -43,6 +43,32 @@ namespace SchoolRegister.DAL.EF
                 .HasValue<Parent>(2)
                 .HasValue<Teacher>(3);
 
+            modelBuilder.Entity<SubjectGroup>()
+                .HasKey(sg => new { sg.GroupId, sg.SubjectId });
+
+            modelBuilder.Entity<SubjectGroup>()
+                .HasOne(s => s.Subject)
+                .WithMany(sg => sg.SubjectGroups)
+                .HasForeignKey(s => s.SubjectId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SubjectGroup>()
+                .HasOne(g => g.Group)
+                .WithMany(sg => sg.SubjectGroups)
+                .HasForeignKey(g => g.GroupId);
+
+            modelBuilder.Entity<Group>()
+                .Property(g => g.Name)
+                .IsRequired();
+
+            modelBuilder.Entity<Grade>()
+                .HasKey(g => new { g.DateOfIssue, g.StudentId, g.SubjectId });
+
+            modelBuilder.Entity<Grade>()
+                .HasOne(s => s.Student)
+                .WithMany(sg => sg.Grades)
+                .HasForeignKey(s => s.StudentId)
+                .OnDelete(DeleteBehavior.Restrict);
 
         }
     }
