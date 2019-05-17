@@ -11,13 +11,13 @@ namespace SchoolRegister.BLL.Entities
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
-        public Teacher Teacher { get; set; }
+        public virtual Teacher Teacher { get; set; }
         [ForeignKey("Teacher")]
         public int TeacherID { get; set; }
         [Required]
         public string Description { get; set; }
-        public IList<SubjectGroup> SubjectGroups { get; set; }
-        public IList<Grade> Grades { get; set; }
+        public virtual IList<SubjectGroup> SubjectGroups { get; set; }
+        public virtual IList<Grade> Grades { get; set; }
         
     }
 }

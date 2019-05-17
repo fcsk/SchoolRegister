@@ -23,7 +23,7 @@ namespace SchoolRegister.DAL.EF
         {
             base.OnConfiguring(optionsBuilder);
             optionsBuilder
-                //.UseLazyLoadingProxies() Lazyloading nie działa na ten moment!
+               .UseLazyLoadingProxies() 
                 .UseSqlServer(_connectionStringDto.ConnectionString); // for provider SQL Server 
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

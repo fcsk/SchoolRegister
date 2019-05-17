@@ -13,7 +13,7 @@ namespace SchoolRegister.Services.Services
 {
     public class StudentService : BaseService, IStudentService
     {
-        private IEnumerable<StudentVm> studentsEntities;
+        
 
         public StudentService(ApplicationDbContext dbContext) : base(dbContext)
         {

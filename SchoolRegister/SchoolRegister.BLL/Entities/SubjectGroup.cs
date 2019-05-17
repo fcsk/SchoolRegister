@@ -9,9 +9,9 @@ namespace SchoolRegister.BLL.Entities
     {
         [Key]
         public int GroupId { get; set; }
-        public Group Group { get; set; }
+        public virtual Group Group { get; set; }
         
         public int SubjectId { get; set; }
-        public Subject Subject { get; set; }
+        public virtual Subject Subject { get; set; }
     }
 }

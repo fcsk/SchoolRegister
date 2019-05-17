@@ -10,7 +10,7 @@ namespace SchoolRegister.BLL.Entities
     {
         [Key]
         public DateTime DateOfIssue { get; set; }
-        public GradeScale GradeValue { get; set; }
+        public  GradeScale GradeValue { get; set; }
         public  virtual Subject Subject { get; set; }
 
         [ForeignKey("Subject")]
