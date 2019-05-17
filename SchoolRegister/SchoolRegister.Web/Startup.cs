@@ -13,6 +13,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SchoolRegister.BLL.Entities;
 using SchoolRegister.DAL.EF;
+using SchoolRegister.Services.Interfaces;
+using SchoolRegister.Services.Services;
 using SchoolRegister.ViewModels.VMs;
 
 namespace SchoolRegister.Web
@@ -124,6 +126,11 @@ namespace SchoolRegister.Web
 
             services.AddScoped<DbContext, ApplicationDbContext>();
             services.AddScoped<DbContextOptions<ApplicationDbContext>>();
+            services.AddScoped<IGroupService, GroupService>();
+            services.AddScoped<IGradeService, GradeService>();
+            services.AddScoped<ISubjectService, SubjectService>();
+            services.AddScoped<ITeacherService, TeacherService>();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             #endregion
             Services = services;
