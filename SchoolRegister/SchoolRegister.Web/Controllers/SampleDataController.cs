@@ -1,20 +1,25 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using SchoolRegister.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SchoolRegister.Web.Controllers
 {
-    [Route("api/[controller]")]
-    public class SampleDataController : Controller
+    public class SampleDataController : BaseController
     {
+        public SampleDataController(ILoggerFactory loggerFactory) : base(loggerFactory)
+        {
+        }
+
         private static string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        [HttpGet("[action]")]
+
         public IEnumerable<WeatherForecast> WeatherForecasts()
         {
             var rng = new Random();
@@ -32,13 +37,7 @@ namespace SchoolRegister.Web.Controllers
             public int TemperatureC { get; set; }
             public string Summary { get; set; }
 
-            public int TemperatureF
-            {
-                get
-                {
-                    return 32 + (int)(TemperatureC / 0.5556);
-                }
-            }
+            public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
         }
     }
 }

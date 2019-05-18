@@ -1,20 +1,23 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router';
 import { Layout } from './components/Layout';
-import { Home } from './components/Home';
+import withAuth from './components/Authentication/withAuth';
 import { FetchData } from './components/FetchData';
-import { Counter } from './components/Counter';
+class App extends Component {
+    displayName = App.name
+    componentDidMount() {
+    }
 
-export default class App extends Component {
-  displayName = App.name
+    render() {
+        return (
+            <div>
+                <Layout history={this.props.history} user={this.props.user}>
+                    <Route exact path='/' component={FetchData} />
+                    <Route exact path='/fetchdata' component={FetchData} />
+                </Layout>
 
-  render() {
-    return (
-      <Layout>
-        <Route exact path='/' component={Home} />
-        <Route path='/counter' component={Counter} />
-        <Route path='/fetchdata' component={FetchData} />
-      </Layout>
-    );
-  }
+            </div>
+        );
+    }
 }
+export default withAuth(App);

@@ -15,10 +15,13 @@
         this.fetch = this.fetch.bind(this);
         this.isSuccess = true;
     }
+
     fetch(url, options, token) {
+
         const headers = {
             'Accept': 'text/plain'
         };
+
         if (token !== null) {
             headers['Authorization'] = 'Bearer ' + token;
         }
@@ -36,7 +39,9 @@
                     return response.json();
                 }
             });
+
     }
+
     _checkStatus(response, localThis) {
         // raises an error in case response status is not a success
         if (!response.ok) {
@@ -47,7 +52,7 @@
                 alert(err);
             });
         }
-        if (response.status >= 200 && response.status < 300) {
+        if (response.status >= 200 && response.status < 300) { // Success status lies between 200 to 300
             return response;
         }
     }
