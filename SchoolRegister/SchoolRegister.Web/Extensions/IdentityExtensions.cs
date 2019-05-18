@@ -1,0 +1,21 @@
+﻿using Microsoft.AspNetCore.Identity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace SchoolRegister.Web.Extensions
+{
+    public static class IdentityExtensions
+    {
+        public static string GetErrorsString(this IEnumerable<IdentityError> errors)
+        {
+            var resultString = string.Empty;
+            errors.ToList().ForEach(e =>
+            {
+                resultString += " Error code:" + e.Code + "; " + e.Description + "\n";
+            });
+            return resultString;
+        }
+    }
+}
