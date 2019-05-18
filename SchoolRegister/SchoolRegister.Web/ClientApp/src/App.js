@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { Route } from 'react-router';
 import { Layout } from './components/Layout';
 import withAuth from './components/Authentication/withAuth';
-import { FetchData } from './components/FetchData';
-import { Subject } from './components/Subject';
+import { Subject } from "./components/Subject";
 class App extends Component {
     displayName = App.name
     componentDidMount() {
@@ -13,10 +12,9 @@ class App extends Component {
         return (
             <div>
                 <Layout history={this.props.history} user={this.props.user}>
-                    <Route exact path='/' component={FetchData} />
-                    <Route exact path='/fetchdata' component={FetchData} />
+                    <Route exact path='/' component={Subject} />
+                    <Route exact path='/subject' component={Subject} />
                 </Layout>
-
             </div>
         );
     }

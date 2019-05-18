@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SchoolRegister.DAL.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -29,7 +29,7 @@ namespace SchoolRegister.DAL.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -193,9 +193,9 @@ namespace SchoolRegister.DAL.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true),
-                    TeacherId = table.Column<int>(nullable: true),
-                    Description = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: false),
+                    TeacherId = table.Column<int>(nullable: false),
+                    Description = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -205,7 +205,7 @@ namespace SchoolRegister.DAL.Migrations
                         column: x => x.TeacherId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -214,12 +214,13 @@ namespace SchoolRegister.DAL.Migrations
                 {
                     DateOfIssue = table.Column<DateTime>(nullable: false),
                     GradeValue = table.Column<int>(nullable: false),
-                    SubjectId = table.Column<int>(nullable: true),
-                    StudentId = table.Column<int>(nullable: true)
+                    SubjectId = table.Column<int>(nullable: false),
+                    StudentId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Grade", x => x.DateOfIssue);
+                    table.PrimaryKey("PK_Grade", x => new { x.DateOfIssue, x.StudentId, x.SubjectId });
+                    table.UniqueConstraint("AK_Grade_DateOfIssue", x => x.DateOfIssue);
                     table.ForeignKey(
                         name: "FK_Grade_AspNetUsers_StudentId",
                         column: x => x.StudentId,
@@ -228,6 +229,31 @@ namespace SchoolRegister.DAL.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Grade_Subjects_SubjectId",
+                        column: x => x.SubjectId,
+                        principalTable: "Subjects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SubjectGroup",
+                columns: table => new
+                {
+                    GroupId = table.Column<int>(nullable: false),
+                    SubjectId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SubjectGroup", x => new { x.GroupId, x.SubjectId });
+                    table.UniqueConstraint("AK_SubjectGroup_GroupId", x => x.GroupId);
+                    table.ForeignKey(
+                        name: "FK_SubjectGroup_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SubjectGroup_Subjects_SubjectId",
                         column: x => x.SubjectId,
                         principalTable: "Subjects",
                         principalColumn: "Id",
@@ -294,6 +320,11 @@ namespace SchoolRegister.DAL.Migrations
                 column: "SubjectId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SubjectGroup_SubjectId",
+                table: "SubjectGroup",
+                column: "SubjectId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Subjects_TeacherId",
                 table: "Subjects",
                 column: "TeacherId");
@@ -318,6 +349,9 @@ namespace SchoolRegister.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "Grade");
+
+            migrationBuilder.DropTable(
+                name: "SubjectGroup");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
