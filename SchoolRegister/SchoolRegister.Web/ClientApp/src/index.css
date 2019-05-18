@@ -3,4 +3,16 @@
     body {
         padding-top: 50px;
     }
+    .k-animation-container-shown {
+        z-index: 24998 !important;
+    }
+
+    .k-dialog {
+        width: 50%;
+        height: 50%
+    }
+
+        .k-dialog .k-textbox, .k-dialog .k-datepicker, .k-dialog .k-dialog-content label, .k-dialog .k-dropdown {
+            width: 100% !important;
+        }
 }

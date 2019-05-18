@@ -13,6 +13,7 @@ namespace SchoolRegister.Services.Interfaces
         SubjectVm AddOrUpdate(AddOrUpdateSubjectDto addOrUpdateSubjectDto);
         SubjectVm GetSubject(Expression<Func<Subject, bool>> filterPredicate);
         IEnumerable<SubjectVm> GetSubjects(Expression<Func<Subject, bool>> filterPredicate = null);
-            
+        bool DeleteSubject(Expression<Func<Subject, bool>> deletePredicate);
+
     }
 }

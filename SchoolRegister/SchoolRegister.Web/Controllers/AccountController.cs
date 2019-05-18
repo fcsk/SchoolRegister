@@ -27,15 +27,14 @@ namespace SchoolRegister.Web.Controllers
         private readonly JwtIssuerOptions _jwtOptions;
         private readonly JsonSerializerSettings _serializerSettings;
         private readonly ApplicationDbContext _dbContext;
-
         public AccountController(
-            UserManager<User> userManager,
-            SignInManager<User> signInManager,
-            IOptions<JwtIssuerOptions> jwtOptions,
-            ILoggerFactory loggerFactory,
-            ApplicationDbContext dbContext
+        UserManager<User> userManager,
+        SignInManager<User> signInManager,
+        IOptions<JwtIssuerOptions> jwtOptions,
+        ILoggerFactory loggerFactory,
+        ApplicationDbContext dbContext
         )
-            : base(loggerFactory)
+        : base(loggerFactory)
         {
             _userManager = userManager;
             _jwtOptions = jwtOptions.Value;
@@ -46,7 +45,6 @@ namespace SchoolRegister.Web.Controllers
                 Formatting = Formatting.Indented
             };
         }
-
         // GET: api/values
         [AllowAnonymous]
         [HttpPost]
@@ -62,10 +60,8 @@ namespace SchoolRegister.Web.Controllers
                     {
                         return Ok(new { success = true });
                     }
-
                     return StatusCode(500, result.Errors.GetErrorsString());
                 }
-
                 return StatusCode(500, "Invalid data model.");
             }
             catch (Exception ex)
@@ -73,7 +69,6 @@ namespace SchoolRegister.Web.Controllers
                 return StatusCode(500, ex.Message + " Inner Message " + ex.InnerException?.Message);
             }
         }
-
         [Authorize(Roles = "Administrator")]
         [HttpPost]
         public async Task<IActionResult> AddUserToRole([FromForm]UserToRoleDto dto)
@@ -90,13 +85,10 @@ namespace SchoolRegister.Web.Controllers
                         {
                             return Ok(new { success = true });
                         }
-
                         return StatusCode(500, result.Errors.GetErrorsString());
                     }
-
                     return StatusCode(500, "User not exists.");
                 }
-
                 return StatusCode(500, "Invalid data model.");
             }
             catch (Exception ex)
@@ -104,7 +96,6 @@ namespace SchoolRegister.Web.Controllers
                 return StatusCode(500, ex.Message + " Inner Message " + ex.InnerException?.Message);
             }
         }
-
         [Authorize(Roles = "Administrator")]
         [HttpPost]
         public async Task<IActionResult> DetachUserFromRole([FromForm]UserToRoleDto dto)
@@ -121,13 +112,10 @@ namespace SchoolRegister.Web.Controllers
                         {
                             return Ok(new { success = true });
                         }
-
                         return StatusCode(500, result.Errors.GetErrorsString());
                     }
-
                     return StatusCode(500, "User not exists.");
                 }
-
                 return StatusCode(500, "Invalid data model.");
             }
             catch (Exception ex)
@@ -135,7 +123,6 @@ namespace SchoolRegister.Web.Controllers
                 return StatusCode(500, ex.Message + " Inner Message " + ex.InnerException?.Message);
             }
         }
-
         [AllowAnonymous]
         [HttpPost]
         public IActionResult Login([FromForm] LoginUserVm applicationUser)
@@ -143,36 +130,41 @@ namespace SchoolRegister.Web.Controllers
             if (string.IsNullOrWhiteSpace(applicationUser.Login) || string.IsNullOrWhiteSpace(applicationUser.Password) || !ModelState.IsValid)
             {
                 _logger.LogInformation(
-                    $"Login or password are empty or invalid.");
+                $"Login or password are empty or invalid.");
                 return BadRequest("Invalid credentials");
             }
             var result = _signInManager
-                .PasswordSignInAsync(applicationUser.Login, applicationUser.Password, true, false).Result;
+            .PasswordSignInAsync(applicationUser.Login, applicationUser.Password, true, false).Result;
             if (result.Succeeded == false)
             {
                 _logger.LogInformation(
-                    $"Invalid username ({applicationUser.Login}) or password ({applicationUser.Password})");
+                $"Invalid username ({applicationUser.Login}) or password ({applicationUser.Password})");
                 return BadRequest("Invalid credentials");
             }
-
-            int tokenExpirationMinutes = 20;
+            var tokenExpirationMinutes = 20;
             var claims = new[]
             {
-                new Claim("username", applicationUser.Login),
-                new Claim(JwtRegisteredClaimNames.Nbf,
-                    new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString()),
-                new Claim(JwtRegisteredClaimNames.Exp,
-                    ((long)((DateTime.Now.AddMinutes(tokenExpirationMinutes) - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds)).ToString())
-            };
-
-            var token = new JwtSecurityToken(
-                new JwtHeader(new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey)),
-                    SecurityAlgorithms.HmacSha256)),
-                new JwtPayload(claims));
-
+            new Claim("username", applicationUser.Login),
+            new Claim(JwtRegisteredClaimNames.Nbf,
+            new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString()),
+            new Claim(JwtRegisteredClaimNames.Exp,
+            ((long)((DateTime.Now.AddMinutes(tokenExpirationMinutes) - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds)).ToString())
+};
+            var claimsIdentity = new ClaimsIdentity(claims, "Token");
+            var user = _dbContext.Users.FirstOrDefault(u => u.UserName == applicationUser.Login);
+            if (user == null) return StatusCode(500, "Given user does not exist in the database.");
+            var roles = _userManager.GetRolesAsync(user).Result;
+            claimsIdentity.AddClaims(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+            var token = new JwtSecurityToken
+            (
+            _jwtOptions.Issuer,
+            _jwtOptions.Issuer,
+            claimsIdentity.Claims,
+            expires: DateTime.Now.AddMinutes(tokenExpirationMinutes),
+            notBefore: DateTime.Now,
+            signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey)), SecurityAlgorithms.HmacSha256)
+            );
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(token);
-
             var response = new
             {
                 access_token = encodedJwt,
@@ -181,7 +173,6 @@ namespace SchoolRegister.Web.Controllers
             var json = JsonConvert.SerializeObject(response, _serializerSettings);
             return new OkObjectResult(json);
         }
-
         [HttpGet]
         public IActionResult Get()
         {

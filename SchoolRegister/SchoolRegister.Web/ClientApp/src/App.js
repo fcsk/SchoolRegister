@@ -3,6 +3,7 @@ import { Route } from 'react-router';
 import { Layout } from './components/Layout';
 import withAuth from './components/Authentication/withAuth';
 import { FetchData } from './components/FetchData';
+import { Subject } from './components/Subject';
 class App extends Component {
     displayName = App.name
     componentDidMount() {

@@ -62,4 +62,15 @@ namespace SchoolRegister.Services.Services
             IEnumerable<SubjectVm> subjectVms = Mapper.Map<IEnumerable<SubjectVm>>(subjectEntities);
             return subjectVms;
         }
-    }}
+        public bool DeleteSubject(Expression<Func<Subject, bool>> deletePredicate)
+        {
+            var subject = _dbContext.Subjects.FirstOrDefault(deletePredicate);
+            if (subject == null) throw new InvalidOperationException("Subject not exits");
+            _dbContext.SubjectGroup.RemoveRange(subject.SubjectGroups);
+            _dbContext.Subjects.Remove(subject);
+            _dbContext.SaveChanges();
+            return true;
+        }
+    }
+}
+

@@ -3,6 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@progress/kendo-data-query": "^1.5.1",
+    "@progress/kendo-react-dateinputs": "^2.11.0",
+    "@progress/kendo-react-dropdowns": "^2.11.0",
+    "@progress/kendo-react-grid": "^2.11.0",
+    "@progress/kendo-react-inputs": "^2.11.0",
+    "@progress/kendo-react-intl": "^2.11.0",
     "bootstrap": "^3.3.7",
     "jwt-decode": "^2.2.0",
     "react": "^16.0.0",
