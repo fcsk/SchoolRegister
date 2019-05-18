@@ -1,4 +1,6 @@
 using System;
+using System.Net;
+using System.Net.Mail;
 using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
@@ -10,12 +12,14 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using SchoolRegister.BLL.Entities;
 using SchoolRegister.DAL.EF;
 using SchoolRegister.Services.Interfaces;
 using SchoolRegister.Services.Services;
 using SchoolRegister.ViewModels.VMs;
+using SchoolRegister.Web.Configuration;
 
 namespace SchoolRegister.Web
 {
@@ -79,16 +83,17 @@ namespace SchoolRegister.Web
 
             services.AddAntiforgery(options => options.HeaderName = "X-XSRF-TOKEN");
 
-            var corsBuilder = new CorsPolicyBuilder();
-            corsBuilder.AllowAnyHeader();
-            corsBuilder.WithMethods("GET", "POST", "PUT", "DELETE");
-            //corsBuilder.WithOrigins("http://localhost:4583");
-            corsBuilder.AllowCredentials();
+            // Uncomment to enable cors
+            //var corsBuilder = new CorsPolicyBuilder();
+            //corsBuilder.AllowAnyHeader();
+            //corsBuilder.WithMethods("GET", "POST", "PUT", "DELETE");
+            ////corsBuilder.WithOrigins("http://localhost:4583");
+            //corsBuilder.AllowCredentials();
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy("AllowCors", corsBuilder.Build());
-            });
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy("AllowCors", corsBuilder.Build());
+            //});
 
             services.Configure<FormOptions>(x =>
             {
@@ -117,21 +122,37 @@ namespace SchoolRegister.Web
                     ClockSkew = TimeSpan.FromMinutes(5) //5 minute tolerance for the expiration date
                 };
             });
+            services.AddScoped((serviceProvider) =>
+            {
+                var config = serviceProvider.GetRequiredService<IConfiguration>();
+                return new SmtpClient()
+                {
+                    Host = config.GetValue<String>("Email:Smtp:Host"),
+                    Port = config.GetValue<int>("Email:Smtp:Port"),
+                    Credentials = new NetworkCredential(
+                        config.GetValue<String>("Email:Smtp:Username"),
+                        config.GetValue<String>("Email:Smtp:Password")
+                    )
+                };
+            });
             #endregion
 
             #region Our Services
 
             var cs = new ConnectionStringDto() { ConnectionString = _connectionString };
             services.AddSingleton(cs);
-
+            var mappingConfig = new AutoMapper.MapperConfiguration(cfg =>
+            {
+                cfg.Mapping();
+            });
+            services.AddSingleton(x => mappingConfig.CreateMapper());
             services.AddScoped<DbContext, ApplicationDbContext>();
             services.AddScoped<DbContextOptions<ApplicationDbContext>>();
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IGradeService, GradeService>();
             services.AddScoped<ISubjectService, SubjectService>();
             services.AddScoped<ITeacherService, TeacherService>();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
+            services.AddScoped<IStudentService, StudentService>();
             #endregion
             Services = services;
 
@@ -145,7 +166,7 @@ namespace SchoolRegister.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -155,7 +176,9 @@ namespace SchoolRegister.Web
             {
                 app.UseExceptionHandler("/Error");
             }
-
+            loggerFactory.AddFile("Log/SchoolRegister-{Date}.txt");
+            app.UseSession();
+            app.UseAuthentication();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
