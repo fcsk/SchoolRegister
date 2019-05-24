@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
@@ -20,6 +20,7 @@ using SchoolRegister.Services.Interfaces;
 using SchoolRegister.Services.Services;
 using SchoolRegister.ViewModels.VMs;
 using SchoolRegister.Web.Configuration;
+using SchoolRegister.Web.Models;
 
 namespace SchoolRegister.Web
 {
@@ -163,6 +164,9 @@ namespace SchoolRegister.Web
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+            services.AddDbContext<SchoolRegisterWebContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("SchoolRegisterWebContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
