@@ -1,2 +1,5 @@
 # SchoolRegister
-Projekt szkolnego e-dziennika realizowanego podczas zajêæ Zaawansowane Programowanie Internetowe w technologiach React.js oraz ASP.NET Web API
+Projekt szkolnego e-dziennika realizowanego podczas zajÄ™Ä‡ Zaawansowane Programowanie Internetowe  oraz w domu w technologiach React.js oraz ASP.NET Web API
+
+
+School register implemented in the react.js and ASP.NET Web API classes and at home
